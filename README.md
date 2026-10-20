@@ -2,7 +2,7 @@
 
 Clean-room macOS **launcher + clipboard** (Swift / AppKit).
 
-Lives as a self-contained subproject under the [Reverse](../README.md) workspace (Raycast notes: `../research/raycast/`). Can be extracted as its own OSS repo.
+Developed under a local Reverse workspace; this directory is the **standalone** Git repo ([godlockin/Blitz](https://github.com/godlockin/Blitz), branch `miao`).
 
 | | |
 |---|---|
@@ -66,14 +66,10 @@ Acceptance: `Reconstruction/` · Contributing: [CONTRIBUTING.md](./CONTRIBUTING.
 
 ## Releases (GitHub Actions)
 
-| Context | Tag | Workflow |
-|---|---|---|
-| Standalone Blitz repo | `v0.4.0` | [`.github/workflows/release.yml`](./.github/workflows/release.yml) |
-| Reverse monorepo | `blitz-v0.4.0` | repo root `blitz-release.yml` (only builds this tree) |
-
 ```bash
-# monorepo
-git tag blitz-v0.4.0 && git push origin blitz-v0.4.0
+git tag v0.4.0 && git push origin v0.4.0
 ```
 
-CI artifact is **ad-hoc** signed. Day-to-day: `make install` + **Blitz Dev**.
+Workflow: [`.github/workflows/release.yml`](./.github/workflows/release.yml). Artifact is **ad-hoc** signed. Day-to-day: `make install` + **Blitz Dev**.
+
+Comparison: [docs/COMPARISON.md](./docs/COMPARISON.md).

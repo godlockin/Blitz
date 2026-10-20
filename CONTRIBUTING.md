@@ -10,9 +10,6 @@
 ## Develop
 
 ```bash
-# If this folder is inside the Reverse monorepo:
-cd blitz
-
 make signing-cert   # once per machine
 make install        # ~/Applications/Blitz.app
 ```
@@ -22,10 +19,8 @@ Data: `~/Library/Application Support/Blitz/`
 
 ## Releases
 
-- **Standalone Blitz repo:** tag `v*` → `.github/workflows/release.yml`
-- **Inside Reverse monorepo:** tag `blitz-v*` → root workflow `blitz-release.yml` (only builds this tree)
-
-Prefer `make install` locally for stable Accessibility (Blitz Dev). CI zips are **ad-hoc** signed.
+Tag `v*` → `.github/workflows/release.yml` (ad-hoc zip).  
+Prefer `make install` locally for stable Accessibility (**Blitz Dev**).
 
 ## Scope
 

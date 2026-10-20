@@ -1,0 +1,11 @@
+build/
+dist/
+*.o
+.DS_Store
+.swiftpm/
+.derivedData/
+*.xcuserdata
+*.p12
+*.pem
+*.key
+*.log

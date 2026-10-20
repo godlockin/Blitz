@@ -1,0 +1,58 @@
+{
+  "product": "Blitz",
+  "bundle_id": "research.reversedir.blitz",
+  "distribution": {
+    "current": "local-self-signed",
+    "identity": "Blitz Dev",
+    "notarization": "out-of-scope-while-unpaid",
+    "note": "No Apple Developer Program / Developer ID. Gatekeeper will not treat builds like notarized Clipy DMGs; Accessibility still required for paste."
+  },
+  "replaces": {
+    "observed_app": "com.raycast.macos",
+    "policy": "original-clean-room-reimplementation",
+    "not_allowed": [
+      "reuse Raycast binaries, resources, icons, or trademarks",
+      "reuse Raycast bundle id or URL schemes",
+      "circumvent Raycast licensing or Pro gates"
+    ]
+  },
+  "boundaries": [
+    {
+      "id": "mvp-daily-driver",
+      "goal": "Daily non-AI launcher + clipboard (Clipy-plus)",
+      "must": [
+        "agent app (LSUIElement) with global hotkey",
+        "AppKit search panel for apps/commands/files/calc",
+        "clipboard history capture + paste (+ pin)",
+        "text snippets with keyword expansion",
+        "basic window snap (halves/quarters/center)",
+        "quicklinks + local scripts",
+        "settings + catalog editors",
+        "stable Blitz Dev signed install (~/Applications)"
+      ]
+    },
+    {
+      "id": "parity-core-later",
+      "goal": "Optional Raycast-map extras (not blocking MVP)",
+      "later": [
+        "emoji picker",
+        "calendar/contacts read",
+        "focus session blockers",
+        "richer IPC / extension host",
+        "Sparkle updater / Developer ID notarized DMG (requires paid Apple account)"
+      ]
+    }
+  ],
+  "evidence_basis": [
+    "research/raycast/RAYCAST_ANALYSIS_REPORT.md",
+    "research/raycast/raycast_final_report.json",
+    "research/raycast/raycast_feature_map_non_ai.json",
+    "research/raycast/raycast_ipc_methods.json"
+  ],
+  "architecture": {
+    "host": "Swift AppKit agent",
+    "ui": "native NSPanel search UI (no WKWebView in MVP)",
+    "persistence": "SQLite blitz.sqlite + JSON catalogs",
+    "bridge": "optional blitz:// URL scheme; logic stays in Swift"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "boundary": "mvp-daily-driver",
+  "version": "0.4.0",
+  "distribution": "local-self-signed (Blitz Dev; no Developer ID)",
+  "focus": [
+    "clipboard_sqlite",
+    "clipy_parity_menu",
+    "launcher_quicklinks_scripts_window",
+    "catalog_editor",
+    "stable_codesign"
+  ],
+  "progress": {
+    "clipboard_text": "done",
+    "clipboard_image": "done",
+    "clipboard_rich_types": "done",
+    "clipboard_sqlite": "done",
+    "clipboard_pin": "done",
+    "snippets_sqlite": "done",
+    "file_search_ranked": "done",
+    "calculator": "done",
+    "quicklinks_in_search": "done",
+    "scripts_in_search": "done",
+    "window_snap_in_search": "done",
+    "window_center": "done",
+    "catalog_editor_ui": "done",
+    "main_hotkey_conflict_fix": "done",
+    "codesign_single_pass_install": "done",
+    "stable_blitz_dev_signing": "done",
+    "packaged_app": "done",
+    "github_actions_release": "done",
+    "developer_id_notarization": "wontfix-unpaid"
+  },
+  "hotkeys": {
+    "launcher": "⌃⌥Space (default)",
+    "clipboard_panel": "⌃⌥V (default)",
+    "main_menu": "⌥⌘V (default; avoids ⇧⌘V clash)",
+    "history_popup": "⌃⌘V",
+    "snippets": "⇧⌘B",
+    "settings": "⌃⌥⇧⌘V"
+  },
+  "install_path": "~/Applications/Blitz.app",
+  "data_path": "~/Library/Application Support/Blitz/blitz.sqlite",
+  "catalog_paths": {
+    "quicklinks": "~/Library/Application Support/Blitz/quicklinks.json",
+    "scripts": "~/Library/Application Support/Blitz/scripts.json"
+  },
+  "permissions": [
+    "Accessibility required for paste / window snap (persists with Blitz Dev signing)",
+    "Automation (System Events) may be prompted for paste backup"
+  ]
+}

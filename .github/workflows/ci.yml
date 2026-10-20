@@ -1,0 +1,22 @@
+# Canonical Blitz CI — use when this directory is the Git repository root.
+# In the Reverse monorepo, the active workflow is ../../.github/workflows/blitz-ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build:
+    name: Compile Blitz
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: make dist-ci
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Blitz-macos-arm64-ci
+          path: dist/Blitz-macos-arm64.zip
+          retention-days: 7

@@ -1,0 +1,60 @@
+# Canonical Blitz release — use when this directory is the Git repository root.
+# Tag: v* (e.g. v0.4.0)
+# In the Reverse monorepo, use tag blitz-v* and root workflow blitz-release.yml
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    name: Build macOS arm64
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          swiftc --version
+          xcodebuild -version
+          uname -m
+
+      - name: Build + package (ad-hoc signed)
+        run: make dist-ci
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Blitz-macos-arm64
+          path: |
+            dist/Blitz-macos-arm64.zip
+            dist/Blitz-macos-arm64.zip.sha256
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Blitz-macos-arm64.zip
+            dist/Blitz-macos-arm64.zip.sha256
+          generate_release_notes: true
+          body: |
+            ## Blitz macOS (arm64)
+
+            Ad-hoc signed build (no Apple Developer ID / notarization).
+
+            **Install**
+            1. Download `Blitz-macos-arm64.zip`, unzip
+            2. Move `Blitz.app` to `~/Applications`
+            3. First open: right-click → **Open**
+            4. Enable **Accessibility** for paste / window snap
+
+            Local day-to-day: `make signing-cert && make install` (**Blitz Dev**).
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

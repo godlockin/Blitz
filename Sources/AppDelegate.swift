@@ -178,8 +178,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, SettingsWindowDelegate
             return
         }
         if statusItem == nil {
-            let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-            item.button?.title = "Blitz"
+            let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
             item.button?.toolTip = "Blitz — left: history · right: menu"
             item.button?.target = self
             item.button?.action = #selector(statusItemClicked(_:))
@@ -187,8 +186,42 @@ final class AppDelegate: NSObject, NSApplicationDelegate, SettingsWindowDelegate
             statusItem = item
         }
         if let item = statusItem {
+            applyStatusItemAppearance(trusted: Accessibility.trusted)
             rebuildMenu(for: item)
         }
+    }
+
+    private func statusItemImage(size: CGFloat = 18) -> NSImage? {
+        let bundle = Bundle.main
+        if let url = bundle.url(forResource: "StatusItem-2x", withExtension: "png")
+            ?? bundle.url(forResource: "StatusItem", withExtension: "png"),
+           let source = NSImage(contentsOf: url) {
+            return NSImage(size: NSSize(width: size, height: size), flipped: false) { rect in
+                source.draw(in: rect)
+                return true
+            }
+        }
+        if let url = bundle.url(forResource: "AppIcon", withExtension: "icns"),
+           let img = NSImage(contentsOf: url) {
+            img.size = NSSize(width: size, height: size)
+            return img
+        }
+        if let img = NSImage(systemSymbolName: "bolt.fill", accessibilityDescription: "Blitz") {
+            img.size = NSSize(width: size, height: size)
+            return img
+        }
+        return nil
+    }
+
+    private func applyStatusItemAppearance(trusted: Bool) {
+        guard let button = statusItem?.button else { return }
+        button.title = ""
+        button.image = statusItemImage()
+        button.imagePosition = .imageOnly
+        button.appearsDisabled = !trusted
+        button.toolTip = trusted
+            ? "Blitz — left: history · right: menu"
+            : "Blitz — Accessibility required (left: history · right: menu)"
     }
 
     @objc private func statusItemClicked(_ sender: NSStatusBarButton) {
@@ -462,11 +495,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, SettingsWindowDelegate
     private func remindAccessibilityIfNeeded() {
         guard !Accessibility.trusted else {
             FileLogger.log("Accessibility: trusted")
-            statusItem?.button?.title = "Blitz"
+            applyStatusItemAppearance(trusted: true)
             return
         }
         FileLogger.log("Accessibility: NOT trusted — paste will beep until enabled")
-        statusItem?.button?.title = "Blitz!"
+        applyStatusItemAppearance(trusted: false)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
             let alert = NSAlert()
             alert.messageText = "Blitz needs Accessibility"

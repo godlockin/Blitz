@@ -21,6 +21,8 @@ dist-ci: $(BUILD)/$(APP_NAME)
 	@mkdir -p $(DIST) $(APP)/Contents/MacOS $(APP)/Contents/Resources
 	@cp $(BUILD)/$(APP_NAME) $(APP)/Contents/MacOS/$(APP_NAME)
 	@cp $(ROOT)/Info.plist $(APP)/Contents/Info.plist
+	@cp $(ROOT)/Resources/AppIcon.icns $(APP)/Contents/Resources/
+	@cp $(ROOT)/Resources/StatusItem.png $(ROOT)/Resources/StatusItem-2x.png $(APP)/Contents/Resources/
 	@echo 'APPL????' > $(APP)/Contents/PkgInfo
 	@codesign --force --deep --sign - \
 		--entitlements "$(ROOT)/Blitz.entitlements" \
@@ -71,6 +73,8 @@ app: ensure-identity $(BUILD)/$(APP_NAME)
 	@mkdir -p $(APP)/Contents/MacOS $(APP)/Contents/Resources
 	@cp $(BUILD)/$(APP_NAME) $(APP)/Contents/MacOS/$(APP_NAME)
 	@cp $(ROOT)/Info.plist $(APP)/Contents/Info.plist
+	@cp $(ROOT)/Resources/AppIcon.icns $(APP)/Contents/Resources/
+	@cp $(ROOT)/Resources/StatusItem.png $(ROOT)/Resources/StatusItem-2x.png $(APP)/Contents/Resources/
 	@echo 'APPL????' > $(APP)/Contents/PkgInfo
 	@$(MAKE) unlock-keychain
 	@codesign --force --deep \

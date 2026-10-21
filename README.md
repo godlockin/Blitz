@@ -1,5 +1,9 @@
 # Blitz
 
+<p align="center">
+  <img src="Assets/logo.png" alt="Blitz" width="128" height="128" />
+</p>
+
 **Open-source macOS launcher + Clipy-class clipboard** — Swift / AppKit, no paid Apple Developer ID required.
 
 Think Raycast-shaped daily driver: one HUD for apps, files, calc, snippets, quicklinks, local extensions, **and** a deep clipboard (types, OCR, pin, Clipy-style menus). Sync catalogs over **iCloud Drive** without CloudKit.

@@ -280,7 +280,7 @@ enum SearchService {
         case "script":
             ScriptCommandStore.shared.run(String(id.dropFirst(7)))
         case "extension":
-            ExtensionStore.shared.run(id)
+            ExtensionStore.shared.run(id: id)
         case "window":
             let snap: WindowManager.Snap?
             switch id {

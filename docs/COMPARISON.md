@@ -33,6 +33,7 @@ Blitz deliberately sits in the **second** row (Raycast-like daily driver) while 
 | App / file launcher | Yes | No | No | No | Yes | Yes | No |
 | Calculator in search | Yes | No | No | No | Yes | Yes | No |
 | Window snap | Yes | No | No | No | Yes | Workflows | No |
+| Emoji picker | Yes (search) | No | No | No | Yes | Workflows | No |
 | Quicklinks / local scripts | Yes | No | No | No | Yes | Workflows | CLI/scripts |
 | Extension ecosystem | **Local drop-in** (JSON) | No | No | No | Full store | Workflows | Scripts |
 | iCloud / multi-device sync | **iCloud Drive catalogs** | No | No | Pinboards + history | Limited UC | No | No |

@@ -44,6 +44,7 @@ enum SearchService {
         items.append(contentsOf: quicklinkItems(matching: q, rawQuery: raw))
         items.append(contentsOf: scriptItems(matching: q))
         items.append(contentsOf: ExtensionStore.shared.searchItems(matching: q))
+        items.append(contentsOf: EmojiCatalog.searchItems(matching: raw))
         items.append(contentsOf: commandCatalog(matching: q))
         items.append(contentsOf: appItems(matching: q, limit: 15))
 
@@ -81,6 +82,8 @@ enum SearchService {
                        subtitle: "Drop-in extension.json packages", preview: nil),
             SearchItem(id: "cmd.extensions.reload", kind: "command", title: "Reload Extensions",
                        subtitle: "Rescan Application Support/Blitz/Extensions", preview: nil),
+            SearchItem(id: "cmd.emoji", kind: "command", title: "Emoji…",
+                       subtitle: "Type emoji / 表情 + keyword in launcher", preview: nil),
         ]
         if q.isEmpty { return Array(all.prefix(4)) }
         return all.filter {
@@ -93,6 +96,7 @@ enum SearchService {
                 || (q.contains("quick") || q.contains("link") || q.contains("快捷")) && $0.id == "cmd.quicklinks"
                 || (q.contains("script") || q.contains("脚本")) && $0.id == "cmd.scripts"
                 || (q.contains("ext") || q.contains("plugin") || q.contains("扩展")) && $0.id.hasPrefix("cmd.extensions")
+                || (q.contains("emoji") || q.contains("表情")) && $0.id == "cmd.emoji"
         }
     }
 
@@ -255,6 +259,11 @@ enum SearchService {
             ClipboardStore.shared.suppressNextCapture()
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(value, forType: .string)
+        case "emoji":
+            let glyph = String(id.dropFirst(6))
+            guard !glyph.isEmpty else { return }
+            PasteHelper.captureFrontApp()
+            PasteHelper.pasteTextDirect(glyph)
         case "clipboard":
             if id == "cmd.clipboard.clear" {
                 ClipboardStore.shared.clear()
@@ -315,6 +324,9 @@ enum SearchService {
                 ExtensionStore.shared.openExtensionsFolder()
             case "cmd.extensions.reload":
                 ExtensionStore.shared.load()
+            case "cmd.emoji":
+                // Hint only — user types in launcher; show a few defaults by posting nothing.
+                break
             default:
                 break
             }

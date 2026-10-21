@@ -153,7 +153,7 @@ final class PanelController: NSObject, NSTextFieldDelegate, NSTableViewDataSourc
     private func applyModeUI() {
         switch mode {
         case .launcher:
-            queryField?.placeholderString = "Apps · files · clip · extensions · win…"
+            queryField?.placeholderString = "Apps · files · clip · emoji · extensions · win…"
             tableView?.rowHeight = 58
         case .clipboard:
             queryField?.placeholderString = "Filter clipboard history…"
@@ -325,6 +325,12 @@ final class PanelController: NSObject, NSTextFieldDelegate, NSTableViewDataSourc
         if item.id == "cmd.settings" {
             hide()
             onOpenSettings?()
+            return
+        }
+        if item.id == "cmd.emoji" {
+            queryField?.stringValue = "emoji "
+            refresh()
+            window?.makeFirstResponder(queryField)
             return
         }
 
@@ -519,6 +525,8 @@ private final class BlitzRowView: NSTableCellView {
             badge.textColor = NSColor(calibratedRed: 0.55, green: 0.85, blue: 0.95, alpha: 1)
         case "snippet":
             badge.textColor = NSColor(calibratedRed: 0.95, green: 0.55, blue: 0.75, alpha: 1)
+        case "emoji":
+            badge.textColor = NSColor(calibratedRed: 1.0, green: 0.78, blue: 0.35, alpha: 1)
         default:
             badge.textColor = NSColor(calibratedRed: 0.43, green: 0.66, blue: 1, alpha: 1)
         }
@@ -538,6 +546,14 @@ private final class BlitzRowView: NSTableCellView {
             textThumb.font = .systemFont(ofSize: 9)
             textThumb.alignment = .left
             badge.stringValue = "TEXT"
+        } else if item.kind == "emoji", item.id.hasPrefix("emoji:") {
+            thumb.image = nil
+            thumb.isHidden = true
+            textThumb.isHidden = false
+            textThumb.font = .systemFont(ofSize: 22)
+            textThumb.alignment = .center
+            textThumb.stringValue = String(item.id.dropFirst(6))
+            badge.stringValue = "EMOJI"
         } else {
             thumb.image = nil
             thumb.isHidden = true
@@ -559,6 +575,7 @@ private final class BlitzRowView: NSTableCellView {
         case "quicklink": return "Q"
         case "script": return ">"
         case "window": return "▣"
+        case "emoji": return "☺"
         default: return "·"
         }
     }

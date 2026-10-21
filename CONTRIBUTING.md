@@ -26,7 +26,7 @@ Prefer `make install` locally for stable Accessibility (**Blitz Dev**).
 
 | In | Out (for now) |
 |---|---|
-| Launcher, clipboard, snippets, files, calc, window snap | AI / MCP |
+| Launcher, clipboard, snippets, files, calc, emoji, window snap | AI / MCP |
 | Local extensions (`extension.json`) | Raycast-style extension *store* |
 | iCloud Drive catalog sync | CloudKit container / full media sync |
 | UI polish (vibrancy / motion) | Notarized public DMG (paid Developer ID) |

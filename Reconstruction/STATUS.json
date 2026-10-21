@@ -1,13 +1,14 @@
 {
   "boundary": "mvp-daily-driver",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "distribution": "local-self-signed (Blitz Dev; no Developer ID)",
   "focus": [
     "clipboard_sqlite",
     "local_extensions",
     "icloud_drive_sync",
     "ui_polish",
-    "stable_codesign"
+    "stable_codesign",
+    "emoji_picker"
   ],
   "progress": {
     "clipboard_text": "done",
@@ -33,7 +34,9 @@
     "github_actions_release": "done",
     "raycast_store_marketplace": "out-of-scope",
     "paste_full_media_icloud": "partial-drive-text-index",
-    "developer_id_notarization": "wontfix-unpaid"
+    "developer_id_notarization": "wontfix-unpaid",
+    "emoji_picker": "done",
+    "branded_app_icon": "done"
   },
   "hotkeys": {
     "launcher": "⌃⌥Space (default)",

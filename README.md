@@ -10,7 +10,7 @@ Think Raycast-shaped daily driver: one HUD for apps, files, calc, snippets, quic
 
 | | |
 |---|---|
-| Version | **0.5.0** |
+| Version | **0.5.1** |
 | App | `~/Applications/Blitz.app` |
 | Bundle ID | `research.reversedir.blitz` |
 | URL scheme | `blitz://` |
@@ -53,6 +53,7 @@ Day-to-day use `make install` (Blitz Dev). GitHub Release zips are **ad-hoc** si
 | Quicklinks / scripts | Searchable; `{Query}` substitution in Settings |
 | Window snap | `left` / `right` / `center` / `max` … |
 | Extensions | Local `extension.json` packages ([docs](./docs/EXTENSIONS.md)) |
+| Emoji | Searchable picker (`emoji fire` / `:smile` / `表情`) → Enter pastes |
 
 ### Clipboard (Clipy+)
 
@@ -150,7 +151,7 @@ Acceptance fixtures: `Reconstruction/` · Contribute: [CONTRIBUTING.md](./CONTRI
 ## Releases
 
 ```bash
-git tag v0.5.0 && git push origin v0.5.0
+git tag v0.5.1 && git push origin v0.5.1
 ```
 
 Workflow: [`.github/workflows/release.yml`](./.github/workflows/release.yml) → ad-hoc `Blitz-macos-arm64.zip`.

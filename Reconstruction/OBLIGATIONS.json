@@ -31,14 +31,14 @@
         "iCloud Drive catalog sync",
         "polished AppKit panel UI",
         "settings + catalog editors",
-        "stable Blitz Dev signed install (~/Applications)"
+        "stable Blitz Dev signed install (~/Applications)",
+        "emoji picker in launcher"
       ]
     },
     {
       "id": "parity-core-later",
       "goal": "Optional Raycast-map extras (not blocking MVP)",
       "later": [
-        "emoji picker",
         "calendar/contacts read",
         "focus session blockers",
         "signed extension store / marketplace",

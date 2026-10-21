@@ -1,4 +1,5 @@
 import AppKit
+import QuartzCore
 
 enum PanelMode {
     case launcher
@@ -46,10 +47,22 @@ final class PanelController: NSObject, NSTextFieldDelegate, NSTableViewDataSourc
         // macOS 26+: canJoinAllSpaces and moveToActiveSpace are mutually exclusive.
         panel.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary]
         panel.isMovableByWindowBackground = true
-        panel.backgroundColor = NSColor(calibratedRed: 0.10, green: 0.11, blue: 0.15, alpha: 1)
+        panel.backgroundColor = .clear
         panel.hasShadow = true
+        panel.appearance = NSAppearance(named: .darkAqua)
+
+        let effect = NSVisualEffectView(frame: NSRect(origin: .zero, size: size))
+        effect.material = .hudWindow
+        effect.blendingMode = .behindWindow
+        effect.state = .active
+        effect.wantsLayer = true
+        effect.layer?.cornerRadius = 16
+        effect.layer?.masksToBounds = true
+        effect.autoresizingMask = [.width, .height]
 
         let root = NSView(frame: NSRect(origin: .zero, size: size))
+        root.wantsLayer = true
+        root.addSubview(effect, positioned: .below, relativeTo: nil)
         panel.contentView = root
         // Assign early so a later hang still leaves a usable window reference.
         window = panel
@@ -57,23 +70,29 @@ final class PanelController: NSObject, NSTextFieldDelegate, NSTableViewDataSourc
         FileLogger.log("prepare step3 contentView")
 
         let query = NSTextField(string: "")
-        query.placeholderString = "Apps · files · clip · win · snippets · quicklinks"
-        query.font = .systemFont(ofSize: 20)
-        // placeholder updated in applyModeUI()
+        query.placeholderString = "Apps · files · clip · extensions · win…"
+        query.font = .systemFont(ofSize: 22, weight: .medium)
         query.isBordered = false
         query.drawsBackground = false
         query.focusRingType = .none
-        query.textColor = .white
+        query.textColor = .labelColor
         query.delegate = self
-        query.frame = NSRect(x: 18, y: size.height - 52, width: size.width - 60, height: 30)
+        query.frame = NSRect(x: 22, y: size.height - 56, width: size.width - 70, height: 32)
         query.autoresizingMask = [.width, .minYMargin]
         root.addSubview(query)
         queryField = query
 
-        let gear = NSButton(frame: NSRect(x: size.width - 40, y: size.height - 52, width: 28, height: 28))
-        gear.title = "⚙"
+        let gear = NSButton(frame: NSRect(x: size.width - 44, y: size.height - 54, width: 28, height: 28))
+        if let img = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Settings") {
+            gear.image = img
+            gear.symbolConfiguration = .init(pointSize: 14, weight: .medium)
+            gear.title = ""
+        } else {
+            gear.title = "⚙"
+        }
         gear.bezelStyle = .inline
         gear.isBordered = false
+        gear.contentTintColor = .secondaryLabelColor
         gear.target = self
         gear.action = #selector(openSettingsClicked)
         gear.autoresizingMask = [.minXMargin, .minYMargin]
@@ -81,9 +100,9 @@ final class PanelController: NSObject, NSTextFieldDelegate, NSTableViewDataSourc
         FileLogger.log("prepare step4 query")
 
         let meta = NSTextField(labelWithString: "")
-        meta.frame = NSRect(x: 18, y: size.height - 74, width: size.width - 36, height: 16)
-        meta.font = .systemFont(ofSize: 11)
-        meta.textColor = .secondaryLabelColor
+        meta.frame = NSRect(x: 22, y: size.height - 78, width: size.width - 44, height: 16)
+        meta.font = .systemFont(ofSize: 11, weight: .medium)
+        meta.textColor = .tertiaryLabelColor
         meta.autoresizingMask = [.width, .minYMargin]
         root.addSubview(meta)
         metaLabel = meta
@@ -92,22 +111,26 @@ final class PanelController: NSObject, NSTextFieldDelegate, NSTableViewDataSourc
         let table = NSTableView(frame: .zero)
         table.headerView = nil
         table.backgroundColor = .clear
-        table.rowHeight = 64
+        table.rowHeight = 58
+        table.intercellSpacing = NSSize(width: 0, height: 4)
         table.delegate = self
         table.dataSource = self
         table.target = self
         table.doubleAction = #selector(activateSelection)
         table.allowsEmptySelection = false
+        table.selectionHighlightStyle = .regular
+        table.style = .inset
         let col = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("main"))
         col.width = size.width - 24
         table.addTableColumn(col)
         tableView = table
 
-        let scroll = NSScrollView(frame: NSRect(x: 8, y: 8, width: size.width - 16, height: size.height - 90))
+        let scroll = NSScrollView(frame: NSRect(x: 10, y: 12, width: size.width - 20, height: size.height - 96))
         scroll.drawsBackground = false
         scroll.borderType = .noBorder
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
+        scroll.scrollerStyle = .overlay
         scroll.documentView = table
         scroll.autoresizingMask = [.width, .height]
         root.addSubview(scroll)
@@ -130,11 +153,11 @@ final class PanelController: NSObject, NSTextFieldDelegate, NSTableViewDataSourc
     private func applyModeUI() {
         switch mode {
         case .launcher:
-            queryField?.placeholderString = "Apps · files · clip · win · snippets · quicklinks"
-            tableView?.rowHeight = 56
+            queryField?.placeholderString = "Apps · files · clip · extensions · win…"
+            tableView?.rowHeight = 58
         case .clipboard:
             queryField?.placeholderString = "Filter clipboard history…"
-            tableView?.rowHeight = 72
+            tableView?.rowHeight = 68
         }
         updateMeta()
     }
@@ -197,18 +220,23 @@ final class PanelController: NSObject, NSTextFieldDelegate, NSTableViewDataSourc
 
         window.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary]
         window.level = .floating
+        window.alphaValue = 0
+        var frame = window.frame
+        frame.origin.y -= 10
+        window.setFrame(frame, display: false)
         window.orderFrontRegardless()
 
-        if mode == .clipboard {
-            // Keep the original app key so its text caret stays alive.
-            // We still briefly become key so Enter/arrows work in the panel.
-            NSApp.activate(ignoringOtherApps: true)
-            window.makeKeyAndOrderFront(nil)
-            window.makeFirstResponder(queryField)
-        } else {
-            NSApp.activate(ignoringOtherApps: true)
-            window.makeKeyAndOrderFront(nil)
-            window.makeFirstResponder(queryField)
+        NSApp.activate(ignoringOtherApps: true)
+        window.makeKeyAndOrderFront(nil)
+        window.makeFirstResponder(queryField)
+
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.18
+            ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            window.animator().alphaValue = 1
+            var up = window.frame
+            up.origin.y += 10
+            window.animator().setFrame(up, display: true)
         }
 
         queryField?.stringValue = ""
@@ -217,7 +245,14 @@ final class PanelController: NSObject, NSTextFieldDelegate, NSTableViewDataSourc
     }
 
     func hide() {
-        window?.orderOut(nil)
+        guard let window else { return }
+        NSAnimationContext.runAnimationGroup({ ctx in
+            ctx.duration = 0.12
+            window.animator().alphaValue = 0
+        }, completionHandler: {
+            window.orderOut(nil)
+            window.alphaValue = 1
+        })
     }
 
     func refresh() {
@@ -480,6 +515,10 @@ private final class BlitzRowView: NSTableCellView {
             badge.textColor = NSColor(calibratedRed: 0.79, green: 0.63, blue: 1, alpha: 1)
         case "clipboard":
             badge.textColor = NSColor(calibratedRed: 0.95, green: 0.75, blue: 0.35, alpha: 1)
+        case "extension":
+            badge.textColor = NSColor(calibratedRed: 0.55, green: 0.85, blue: 0.95, alpha: 1)
+        case "snippet":
+            badge.textColor = NSColor(calibratedRed: 0.95, green: 0.55, blue: 0.75, alpha: 1)
         default:
             badge.textColor = NSColor(calibratedRed: 0.43, green: 0.66, blue: 1, alpha: 1)
         }
@@ -515,7 +554,23 @@ private final class BlitzRowView: NSTableCellView {
         case "file": return "F"
         case "calculator": return "="
         case "command": return "⌘"
+        case "extension": return "◇"
+        case "snippet": return "S"
+        case "quicklink": return "Q"
+        case "script": return ">"
+        case "window": return "▣"
         default: return "·"
+        }
+    }
+
+    override var backgroundStyle: NSView.BackgroundStyle {
+        didSet {
+            let selected = backgroundStyle == .emphasized
+            titleLabel.textColor = .labelColor
+            layer?.cornerRadius = 10
+            layer?.backgroundColor = selected
+                ? NSColor.controlAccentColor.withAlphaComponent(0.28).cgColor
+                : nil
         }
     }
 

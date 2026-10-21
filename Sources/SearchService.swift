@@ -43,6 +43,7 @@ enum SearchService {
         items.append(contentsOf: snippetItems(matching: q))
         items.append(contentsOf: quicklinkItems(matching: q, rawQuery: raw))
         items.append(contentsOf: scriptItems(matching: q))
+        items.append(contentsOf: ExtensionStore.shared.searchItems(matching: q))
         items.append(contentsOf: commandCatalog(matching: q))
         items.append(contentsOf: appItems(matching: q, limit: 15))
 
@@ -76,6 +77,10 @@ enum SearchService {
                        subtitle: "Launcher URL shortcuts · {Query}", preview: nil),
             SearchItem(id: "cmd.scripts", kind: "command", title: "Edit Scripts…",
                        subtitle: "Local shell commands in launcher", preview: nil),
+            SearchItem(id: "cmd.extensions", kind: "command", title: "Open Extensions Folder…",
+                       subtitle: "Drop-in extension.json packages", preview: nil),
+            SearchItem(id: "cmd.extensions.reload", kind: "command", title: "Reload Extensions",
+                       subtitle: "Rescan Application Support/Blitz/Extensions", preview: nil),
         ]
         if q.isEmpty { return Array(all.prefix(4)) }
         return all.filter {
@@ -87,6 +92,7 @@ enum SearchService {
                 || (q.contains("clear") || q.contains("清空")) && $0.id == "cmd.clipboard.clear"
                 || (q.contains("quick") || q.contains("link") || q.contains("快捷")) && $0.id == "cmd.quicklinks"
                 || (q.contains("script") || q.contains("脚本")) && $0.id == "cmd.scripts"
+                || (q.contains("ext") || q.contains("plugin") || q.contains("扩展")) && $0.id.hasPrefix("cmd.extensions")
         }
     }
 
@@ -273,6 +279,8 @@ enum SearchService {
             }
         case "script":
             ScriptCommandStore.shared.run(String(id.dropFirst(7)))
+        case "extension":
+            ExtensionStore.shared.run(id)
         case "window":
             let snap: WindowManager.Snap?
             switch id {
@@ -303,6 +311,10 @@ enum SearchService {
                 NotificationCenter.default.post(name: .blitzOpenCatalogs, object: nil, userInfo: ["scripts": false])
             case "cmd.scripts":
                 NotificationCenter.default.post(name: .blitzOpenCatalogs, object: nil, userInfo: ["scripts": true])
+            case "cmd.extensions":
+                ExtensionStore.shared.openExtensionsFolder()
+            case "cmd.extensions.reload":
+                ExtensionStore.shared.load()
             default:
                 break
             }

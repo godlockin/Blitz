@@ -22,6 +22,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate, NSTa
     private let hotKeyHint = NSTextField(labelWithString: "")
     private let loginCheckbox = NSButton(checkboxWithTitle: "Launch at Login", target: nil, action: nil)
     private let welcomeCheckbox = NSButton(checkboxWithTitle: "Show welcome tip on launch", target: nil, action: nil)
+    private let iCloudSyncCheckbox = NSButton(checkboxWithTitle: "Sync catalogs via iCloud Drive", target: nil, action: nil)
+    private let iCloudClipboardCheckbox = NSButton(checkboxWithTitle: "Also sync text clip index (no images)", target: nil, action: nil)
+    private let iCloudStatusLabel = NSTextField(labelWithString: "")
     private let clipboardStepper = NSStepper()
     private let clipboardField = NSTextField(string: "")
     private let fileLimitStepper = NSStepper()
@@ -179,6 +182,34 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate, NSTa
         stack.addArrangedSubview(NSStackView(views: [openAX, accessibilityLabel]))
         stack.addArrangedSubview(NSButton(title: "Edit Snippets…", target: self, action: #selector(openSnippets)))
         stack.addArrangedSubview(NSButton(title: "Edit Quicklinks & Scripts…", target: self, action: #selector(openCatalogs)))
+
+        stack.addArrangedSubview(divider())
+        stack.addArrangedSubview(sectionHeader("Extensions"))
+        stack.addArrangedSubview(NSButton(title: "Open Extensions Folder…", target: self, action: #selector(openExtensions)))
+        stack.addArrangedSubview(NSButton(title: "Reload Extensions", target: self, action: #selector(reloadExtensions)))
+        let extHint = NSTextField(labelWithString: "Drop a folder with extension.json into Application Support/Blitz/Extensions.")
+        extHint.textColor = .secondaryLabelColor
+        extHint.font = .systemFont(ofSize: 11)
+        extHint.isEditable = false
+        extHint.isBordered = false
+        extHint.backgroundColor = .clear
+        stack.addArrangedSubview(extHint)
+
+        stack.addArrangedSubview(divider())
+        stack.addArrangedSubview(sectionHeader("iCloud sync"))
+        iCloudSyncCheckbox.target = self
+        iCloudSyncCheckbox.action = #selector(iCloudPrefsChanged)
+        iCloudClipboardCheckbox.target = self
+        iCloudClipboardCheckbox.action = #selector(iCloudPrefsChanged)
+        stack.addArrangedSubview(iCloudSyncCheckbox)
+        stack.addArrangedSubview(iCloudClipboardCheckbox)
+        iCloudStatusLabel.font = .systemFont(ofSize: 11)
+        iCloudStatusLabel.textColor = .secondaryLabelColor
+        iCloudStatusLabel.isEditable = false
+        iCloudStatusLabel.isBordered = false
+        iCloudStatusLabel.backgroundColor = .clear
+        stack.addArrangedSubview(iCloudStatusLabel)
+        stack.addArrangedSubview(NSButton(title: "Sync Now", target: self, action: #selector(syncNow)))
 
         stack.addArrangedSubview(divider())
         stack.addArrangedSubview(sectionHeader("Clipboard types"))
@@ -400,6 +431,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate, NSTa
         mainMenuHotKeyField.stringValue = store.mainMenuHotKeyDisplayString
         loginCheckbox.state = LaunchAtLogin.isEnabled ? .on : .off
         welcomeCheckbox.state = store.showWelcomeOnLaunch ? .on : .off
+        iCloudSyncCheckbox.state = store.iCloudSyncEnabled ? .on : .off
+        iCloudClipboardCheckbox.state = store.iCloudSyncClipboardText ? .on : .off
+        iCloudStatusLabel.stringValue = iCloudSyncService.shared.statusMessage
         clipboardField.stringValue = "\(store.clipboardMaxItems)"
         clipboardStepper.integerValue = store.clipboardMaxItems
         fileLimitField.stringValue = "\(store.fileSearchLimit)"
@@ -577,6 +611,31 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate, NSTa
 
     @objc private func openCatalogs() {
         NotificationCenter.default.post(name: .blitzOpenCatalogs, object: nil, userInfo: ["scripts": false])
+    }
+
+    @objc private func openExtensions() {
+        ExtensionStore.shared.openExtensionsFolder()
+    }
+
+    @objc private func reloadExtensions() {
+        ExtensionStore.shared.load()
+    }
+
+    @objc private func iCloudPrefsChanged() {
+        store.iCloudSyncEnabled = iCloudSyncCheckbox.state == .on
+        store.iCloudSyncClipboardText = iCloudClipboardCheckbox.state == .on
+        if store.iCloudSyncEnabled {
+            iCloudSyncService.shared.start()
+        } else {
+            iCloudSyncService.shared.stop()
+        }
+        iCloudStatusLabel.stringValue = iCloudSyncService.shared.statusMessage
+    }
+
+    @objc private func syncNow() {
+        iCloudSyncService.shared.pullNow()
+        iCloudSyncService.shared.pushNow()
+        iCloudStatusLabel.stringValue = iCloudSyncService.shared.statusMessage + " · synced"
     }
 
     @objc private func toggleRecordLauncher() {

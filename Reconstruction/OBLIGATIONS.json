@@ -27,6 +27,9 @@
         "text snippets with keyword expansion",
         "basic window snap (halves/quarters/center)",
         "quicklinks + local scripts",
+        "local extension drop-ins",
+        "iCloud Drive catalog sync",
+        "polished AppKit panel UI",
         "settings + catalog editors",
         "stable Blitz Dev signed install (~/Applications)"
       ]
@@ -38,7 +41,8 @@
         "emoji picker",
         "calendar/contacts read",
         "focus session blockers",
-        "richer IPC / extension host",
+        "signed extension store / marketplace",
+        "CloudKit full clipboard media sync",
         "Sparkle updater / Developer ID notarized DMG (requires paid Apple account)"
       ]
     }

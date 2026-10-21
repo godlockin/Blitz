@@ -63,6 +63,20 @@ final class SnippetStore {
 
     func save() {
         BlitzDatabase.shared.replaceFolders(folders)
+        // Mirror JSON for iCloud Drive sync / backup.
+        if let data = try? JSONEncoder().encode(folders) {
+            try? data.write(to: storeURL, options: .atomic)
+        }
+        iCloudSyncService.shared.pushNow()
+    }
+
+    /// Reload folders from `snippets.json` (used after iCloud pull).
+    func reloadFromDiskJSON() {
+        guard let data = try? Data(contentsOf: storeURL),
+              let decoded = try? JSONDecoder().decode([SnippetFolder].self, from: data),
+              !decoded.isEmpty else { return }
+        folders = decoded
+        BlitzDatabase.shared.replaceFolders(folders)
     }
 
     func addFolder(name: String) {

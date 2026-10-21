@@ -17,7 +17,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, SettingsWindowDelegate
         SnippetStore.shared.load()
         QuicklinkStore.shared.load()
         ScriptCommandStore.shared.load()
+        ExtensionStore.shared.load()
         clipboardStore.start()
+        iCloudSyncService.shared.start()
         clipboardStore.onHistoryChanged = { [weak self] in
             DispatchQueue.main.async { self?.refreshStatusMenu() }
         }

@@ -31,6 +31,7 @@ final class QuicklinkStore {
     func save() {
         guard let data = try? JSONEncoder().encode(items) else { return }
         try? data.write(to: storeURL, options: .atomic)
+        iCloudSyncService.shared.pushNow()
     }
 
     @discardableResult

@@ -34,7 +34,9 @@ Blitz deliberately sits in the **second** row (Raycast-like daily driver) while 
 | Calculator in search | Yes | No | No | No | Yes | Yes | No |
 | Window snap | Yes | No | No | No | Yes | Workflows | No |
 | Quicklinks / local scripts | Yes | No | No | No | Yes | Workflows | CLI/scripts |
-| iCloud / multi-device sync | No | No | No | Yes | Limited UC | No | No |
+| Extension ecosystem | **Local drop-in** (JSON) | No | No | No | Full store | Workflows | Scripts |
+| iCloud / multi-device sync | **iCloud Drive catalogs** | No | No | Pinboards + history | Limited UC | No | No |
+| UI polish | Vibrancy panel + motion | Minimal | Menu | Strong | Strong | Functional | Qt |
 | Public notarized DMG | No (self-sign / ad-hoc CI) | Yes (MAS/Homebrew) | Yes (Developer ID) | Yes | Yes | Yes | Varies |
 | AI / MCP | No (out of scope) | No | No | Paste MCP | Pro AI | No | No |
 
@@ -48,18 +50,18 @@ Blitz deliberately sits in the **second** row (Raycast-like daily driver) while 
 |---|---|---|
 | **Maccy** | Fastest “one job” OSS; tiny; great search; Homebrew | No snippets, no launcher, weak rich types vs Blitz; no OCR |
 | **Clipy** | Classic menu + snippets; tiny | Little search; slower maintenance; Blitz aims at Clipy **parity+** (types, pin, OCR, SQLite) **plus** launcher |
-| **Paste** | Best polish + iCloud + pinboards | Paid, closed; Blitz wins on OSS + launcher, loses on sync/UI polish |
+| **Paste** | Best polish + full media iCloud + pinboards | Paid, closed; Blitz now has Drive catalog sync + UI polish, still no iOS / full media sync |
 
-**Verdict:** For clipboard-only users, Maccy remains the default OSS pick. Blitz is competitive when you also want **snippets + menus like Clipy** and **image OCR**, but packaging trust (notarization) still lags Maccy/Clipy releases.
+**Verdict:** Maccy remains the default *clipboard-only* OSS pick. Blitz is the pick when you want **Clipy menus + OCR + launcher + local extensions + Drive sync**.
 
 ### 2. Launcher-bundled clipboard (Blitz vs Raycast / Alfred)
 
 | | Strength | Gap vs Blitz |
 |---|---|---|
-| **Raycast** | Polished clipboard + huge ecosystem; free history (time-capped) | Closed; Pro for long retention / AI; Blitz is clean-room OSS subset (no extensions marketplace) |
-| **Alfred** | Workflow depth; clipboard tied to Powerpack | Paid; Blitz free but far fewer workflows |
+| **Raycast** | Store ecosystem; polished clipboard; free history (time-capped) | Closed; Pro AI; Blitz has local extensions only |
+| **Alfred** | Workflow depth; clipboard tied to Powerpack | Paid; Blitz free but thinner workflows |
 
-**Verdict:** Blitz’s bet is **OSS Raycast-shaped daily driver without AI/cloud** — clipboard depth closer to Clipy than to Maccy’s minimalism. Gaps vs Raycast: extensions, polish, notarized install, retention UX, ecosystem.
+**Verdict:** Blitz ≈ **OSS Raycast-shaped daily driver** with local extensions and Drive sync — still behind Raycast Store / Alfred Powerpack depth and notarized install.
 
 ### 3. Power / cross-platform (CopyQ)
 
@@ -69,27 +71,26 @@ CopyQ wins on scripting, tabs, encryption options, Linux/Windows. Loses native m
 
 ## Where Blitz is ahead (today)
 
-- **Combo:** launcher + Clipy-class clipboard + snippets + window snap + quicklinks/scripts in one MIT agent app  
-- **Clipboard types:** text / image / RTF / HTML / PDF / files / URL / color + screenshot ingest + OCR  
-- **Pin** that survives clear/trim  
-- **Local-only** by design (no sync telemetry story)
+- **Combo:** launcher + Clipy-class clipboard + snippets + window snap + quicklinks/scripts + **local extensions**  
+- **Clipboard types:** text / image / RTF / HTML / PDF / files / URL / color + screenshot ingest + OCR + pin  
+- **iCloud Drive sync** for snippets / quicklinks / scripts (optional text-clip index) without a paid CloudKit container  
+- **UI:** HUD vibrancy panel, inset list, open/close motion  
 
 ## Where Blitz is behind
 
 | Gap | Who is better | Notes |
 |---|---|---|
-| Install trust | Clipy, Maccy, Paste, Raycast | Need Developer ID + notarization for one-click Open |
-| Cross-device sync | Paste | Out of scope while unpaid / local-first |
-| Clipboard-only speed/polish | Maccy, Paste | Overlay UX; Blitz panel is functional |
-| Extension / workflow ecosystem | Raycast, Alfred | Explicitly out of v1 |
+| Install trust | Clipy, Maccy, Paste, Raycast | Need Developer ID + notarization |
+| Extension *store* / signed packages | Raycast, Alfred | Blitz is local `extension.json` drop-in only |
+| Full clipboard media sync | Paste | Blitz syncs catalogs (+ optional text index), not image binaries |
+| Visual polish ceiling | Paste, Raycast | Improved, still not App Store marketing UI |
 | Cross-platform | CopyQ | macOS only |
-| Ship cadence / brand recognition | All of the above | Early OSS |
 
 ---
 
 ## Positioning one-liner
 
-> **Blitz = open-source local launcher + Clipy-plus clipboard**, not a Paste sync client and not a Raycast Pro substitute. Closest OSS peers: **Maccy** (clipboard purity) and **Clipy** (menus/snippets); closest product *shape*: **Raycast free** without AI/extensions.
+> **Blitz = open-source launcher + Clipy-plus clipboard**, with **local extensions** and **iCloud Drive catalog sync** — not a Raycast Store substitute, not Paste’s full media sync.
 
 ---
 

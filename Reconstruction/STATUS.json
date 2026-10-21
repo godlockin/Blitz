@@ -1,12 +1,12 @@
 {
   "boundary": "mvp-daily-driver",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "distribution": "local-self-signed (Blitz Dev; no Developer ID)",
   "focus": [
     "clipboard_sqlite",
-    "clipy_parity_menu",
-    "launcher_quicklinks_scripts_window",
-    "catalog_editor",
+    "local_extensions",
+    "icloud_drive_sync",
+    "ui_polish",
     "stable_codesign"
   ],
   "progress": {
@@ -23,11 +23,16 @@
     "window_snap_in_search": "done",
     "window_center": "done",
     "catalog_editor_ui": "done",
+    "local_extension_ecosystem": "done",
+    "icloud_drive_catalog_sync": "done",
+    "ui_vibrancy_panel": "done",
     "main_hotkey_conflict_fix": "done",
     "codesign_single_pass_install": "done",
     "stable_blitz_dev_signing": "done",
     "packaged_app": "done",
     "github_actions_release": "done",
+    "raycast_store_marketplace": "out-of-scope",
+    "paste_full_media_icloud": "partial-drive-text-index",
     "developer_id_notarization": "wontfix-unpaid"
   },
   "hotkeys": {
@@ -40,12 +45,15 @@
   },
   "install_path": "~/Applications/Blitz.app",
   "data_path": "~/Library/Application Support/Blitz/blitz.sqlite",
+  "extensions_path": "~/Library/Application Support/Blitz/Extensions/",
+  "icloud_path": "~/Library/Mobile Documents/com~apple~CloudDocs/Blitz/",
   "catalog_paths": {
     "quicklinks": "~/Library/Application Support/Blitz/quicklinks.json",
     "scripts": "~/Library/Application Support/Blitz/scripts.json"
   },
   "permissions": [
     "Accessibility required for paste / window snap (persists with Blitz Dev signing)",
-    "Automation (System Events) may be prompted for paste backup"
+    "Automation (System Events) may be prompted for paste backup",
+    "iCloud Drive must be enabled for catalog sync (no paid CloudKit container)"
   ]
 }

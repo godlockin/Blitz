@@ -70,6 +70,19 @@ final class SettingsStore {
         static let editSnippetsMods = "blitz.hotkey.editSnippets.mods"
         static let mainMenuCode = "blitz.hotkey.mainMenu.code"
         static let mainMenuMods = "blitz.hotkey.mainMenu.mods"
+        static let iCloudSync = "blitz.sync.icloudEnabled"
+        static let iCloudClipboard = "blitz.sync.icloudClipboardText"
+    }
+
+    var iCloudSyncEnabled: Bool {
+        get { defaults.bool(forKey: Key.iCloudSync) }
+        set { defaults.set(newValue, forKey: Key.iCloudSync) }
+    }
+
+    /// Sync plain-text clip index (not full image media) to iCloud Drive.
+    var iCloudSyncClipboardText: Bool {
+        get { defaults.bool(forKey: Key.iCloudClipboard) }
+        set { defaults.set(newValue, forKey: Key.iCloudClipboard) }
     }
 
     var hotKeyCode: UInt32 {
